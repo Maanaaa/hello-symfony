@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Code list{% endblock %}
+
+{% block body %}
+    <h1>Code list</h1>
+    <ul>
+        {% for code in codes %}
+            <li>
+                {{ code.id }} - {{ code.title }}
+            </li>
+        {% else %}
+            <li>No code found</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
