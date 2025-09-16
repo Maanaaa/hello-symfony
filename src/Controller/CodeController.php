@@ -1,11 +1,13 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Code;
+use App\Form\CodeType;
 use App\Repository\CodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Code;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 class CodeController extends AbstractController
@@ -21,16 +23,23 @@ class CodeController extends AbstractController
     }
 
     #[Route('/code/create', name: 'code.create')]
-    public function create(EntityManagerInterface $em): Response
+    public function create(Request $request, EntityManagerInterface $em): Response
     {
-        $code = (new Code())
-            ->setTitle('My first code');
-        $em->persist($code);
-        $em->flush();
-        return $this->redirectToRoute('code.index');
-        // OR 
-        // return new Response('Code created with id '.$code->getId());
-    }
-    
+        $code = new Code();
 
+        $form = $this->createForm(CodeType::class, $code);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($code);
+            $em->flush();
+
+            $this->addFlash('success', 'Code has been created');
+            return $this->redirectToRoute('code.index');
+        }
+
+        return $this->render('code/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 }

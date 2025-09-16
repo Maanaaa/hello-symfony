@@ -8,6 +8,9 @@
         {% for code in codes %}
             <li>
                 {{ code.id }} - {{ code.title }}
+                <br>
+                <h2>Content : </h2>
+                {{ code.content }}
             </li>
         {% else %}
             <li>No code found</li>
